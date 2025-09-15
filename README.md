@@ -122,7 +122,7 @@ networks:
 
 This will avoid you to see the alert "your connection is not private".
 
-At the first launch of companion a CA certificate is generated. You will find `ca.crt` in your `certs` folder, this is your CA certificate.
+At the first launch of companion a CA certificate is generated. You will find `nginx-proxy-ca.crt` in your `certs` folder, this is your CA certificate.
 
 There are several ways to import a CA certificate, here are two of them.
 
@@ -130,13 +130,13 @@ There are several ways to import a CA certificate, here are two of them.
 
 For MacOS:
 - open `Keychain Access`
-- drag and drop `ca.crt`
+- drag and drop `nginx-proxy-ca.crt`
 - double clik certificate (can be found by typing `nginx` in search box)
 - expand `Trust` in first dropdown select `Always Trust`
 
 Other:
 - Go to : `chrome://settings/certificates`
-- Go to `Authorities` and import `ca.crt`
+- Go to `Authorities` and import `nginx-proxy-ca.crt`
 - Check `Trust the CA to identify websites`
 
 A quicker solution, but less secure, is to allow insecure certificates for `*.localhost` domains : `chrome://flags/#allow-insecure-localhost`
@@ -144,5 +144,24 @@ A quicker solution, but less secure, is to allow insecure certificates for `*.lo
 ##### Firefox
 
 - Go to `about:config#privacy` or to `about:preferences#privacy` in newer versions
-- At the bottom of the page, click on `View certificates`, select `Authorities` > `Import` then browse to `ca.crt`.
+- At the bottom of the page, click on `View certificates`, select `Authorities` > `Import` then browse to `nginx-proxy-ca.crt`.
 - Check `Trust the CA to identify websites`
+
+## Breaking Change - nginx-proxy 1.8+
+
+**Starting with nginx-proxy 1.8, the CA certificate files have been renamed to avoid client-side verification:**
+- `ca.crt` is now `nginx-proxy-ca.crt`
+- `ca.key` is now `nginx-proxy-ca.key`
+
+### Migration from previous versions
+
+To upgrade while keeping your existing CA certificate:
+
+1. Stop the companion container
+2. Rename the existing files in your certs folder:
+   ```bash
+   mv /path/to/certs/ca.crt /path/to/certs/nginx-proxy-ca.crt
+   mv /path/to/certs/ca.key /path/to/certs/nginx-proxy-ca.key
+   ```
+3. Pull the latest version: `docker pull sebastienheyd/self-signed-proxy-companion`
+4. Restart the proxy companion

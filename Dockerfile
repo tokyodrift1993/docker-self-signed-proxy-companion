@@ -13,9 +13,9 @@ ADD . /app
 
 COPY --from=docker-gen /usr/local/bin/docker-gen /usr/local/bin/
 
-ENV DOCKER_HOST unix:///var/run/docker.sock
-ENV NGINX_PROXY_CONTAINER proxy
-ENV EXPIRATION 3650
+ENV DOCKER_HOST=unix:///var/run/docker.sock
+ENV NGINX_PROXY_CONTAINER=proxy
+ENV EXPIRATION=3650
 
 ENTRYPOINT [ "/bin/bash", "/app/entrypoint.sh" ]
 CMD [ "/bin/bash", "/app/start.sh" ]
